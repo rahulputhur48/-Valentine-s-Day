@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ammu ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #f8e8d8;
+    font-family: 'Playfair Display', serif;
+    overflow: hidden;
+}
+
+/* Envelope Screen */
+.envelope-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8e8d8;
+    z-index: 10;
+    flex-direction: column;
+}
+
+.envelope {
+    width: 280px;
+    height: 180px;
+    background: #d6336c;
+    position: relative;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.flap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #b02558;
+    clip-path: polygon(0 0, 50% 60%, 100% 0);
+    transform-origin: top;
+    transition: transform 1s ease;
+}
+
+.open .flap {
+    transform: rotateX(180deg);
+}
+
+.tap-text {
+    margin-top: 20px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 22px;
+}
+
+/* Letter */
+.letter {
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
+    background: #fffaf0;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 1.2s ease;
+    z-index: 5;
+}
+
+.show-letter {
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 32px;
+    text-align: center;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.signature {
+    margin-top: 25px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 22px;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: #d6336c;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Popup */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    transition: 0.3s;
+    z-index: 20;
+}
+
+.popup.active {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.popup-buttons button {
+    flex: 1;
+}
+
+.yes-btn { background: #ff4d6d; }
+.no-btn { background: gray; position: relative; }
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    z-index: 15;
+}
+
+.overlay.active { display: block; }
+
+/* Floating Hearts & Petals */
+.heart, .petal {
+    position: fixed;
+    pointer-events: none;
+}
+
+.heart {
+    bottom: -20px;
+    animation: floatUp linear forwards;
+}
+
+.petal {
+    top: -20px;
+    animation: fall linear forwards;
+}
+
+@keyframes floatUp {
+    to { transform: translateY(-110vh); opacity: 0; }
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); opacity: 0.8; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background Music -->
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Envelope Screen -->
+<div class="envelope-container" id="envelopeContainer">
+    <div class="envelope" onclick="openEnvelope()" id="envelope">
+        <div class="flap"></div>
+    </div>
+    <div class="tap-text">Tap to Open 💌</div>
+</div>
+
+<!-- Letter -->
+<div class="letter" id="letter">
+    <h1>Dear Ammu ❤️</h1>
+    <p>
+        From the moment you entered my life, everything changed.
+        You turned ordinary days into beautiful memories.
+    </p>
+    <p>
+        I cherish every smile, every laugh, and every moment with you.
+        I want you today, tomorrow, and forever.
+    </p>
+    <div class="signature">
+        Forever Yours,<br>
+        Jithu
+    </div>
+    <button onclick="openPopup()">I Have One Question 💌</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="popup" id="popup">
+    <h2>Will you be my Valentine? 💖</h2>
+    <div class="popup-buttons">
+        <button class="yes-btn" onclick="sayYes()">Yes ❤️</button>
+        <button class="no-btn" id="noBtn">No 😢</button>
+    </div>
+</div>
+
+<script>
+function openEnvelope() {
+    document.getElementById("envelope").classList.add("open");
+
+    const music = document.getElementById("bgMusic");
+    music.volume = 0;
+    music.play();
+
+    let fade = setInterval(() => {
+        if (music.volume < 0.4) {
+            music.volume += 0.02;
+        } else {
+            clearInterval(fade);
+        }
+    }, 200);
+
+    setTimeout(() => {
+        document.getElementById("envelopeContainer").style.display = "none";
+        document.getElementById("letter").classList.add("show-letter");
+    }, 1000);
+}
+
+function openPopup() {
+    document.getElementById('popup').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+}
+
+function sayYes() {
+    const popup = document.getElementById('popup');
+    popup.innerHTML = "<h2>You just made me the happiest person alive! ❤️</h2>";
+
+    for (let i = 0; i < 25; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (Math.random() * 20 + 16) + "px";
+        heart.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+    }
+}
+
+const noBtn = document.getElementById("noBtn");
+
+function moveButton() {
+    const x = (Math.random() - 0.5) * 150;
+    const y = (Math.random() - 0.5) * 150;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", function(e){
+    e.preventDefault();
+    moveButton();
+});
+
+setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.fontSize = (Math.random()*10+14)+"px";
+    heart.style.animationDuration = (Math.random()*3+4)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),7000);
+}, 900);
+
+setInterval(() => {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.innerHTML = "🌹";
+    petal.style.left = Math.random()*100 + "vw";
+    petal.style.fontSize = (Math.random()*8+14)+"px";
+    petal.style.animationDuration = (Math.random()*4+6)+"s";
+    document.body.appendChild(petal);
+    setTimeout(()=>petal.remove(),9000);
+}, 1500);
+</script>
+
+</body>
+</html>
